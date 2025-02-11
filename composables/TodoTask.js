@@ -30,7 +30,7 @@ export default function TodoTask() {
         task,
         tasks,
         addTask,
-       
+        
     }
 }
 

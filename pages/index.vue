@@ -7,6 +7,6 @@ import InputForm from '~/components/InputForm.vue';
     <div>
       <Navbar/>
       <InputForm/>
-      <TodoList/>
+      <!-- <TodoList/> -->
     </div>
   </template>
