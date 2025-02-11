@@ -1,33 +1,74 @@
 <script setup>
 import { ref } from 'vue'
+import { db } from '~/firebase'
 
+import { 
+  collection, 
+  addDoc, 
+  getDocs, 
+  deleteDoc,
+  doc,
+  updateDoc 
+} from 'firebase/firestore'
+const loading = ref(false)
 const inputText = ref('')
-const todoList = ref([])
+const todos = ref([])
 const list = ref([])
 
 onMounted(() => {
   console.log("Mounted");
-  
+  fetchTodos()
 })
-
-
- const getItem =()=>{
-  const storedList = localStorage.getItem("todo")
-  if (storedList) {
-    list.value = JSON.parse(storedList)
-    console.log("List updated", list.value);
-    
+const fetchTodos = async () => {
+    loading.value = true
+    try {
+      const querySnapshot = await getDocs(collection(db, 'todos'))
+      console.log("querySnapshot", querySnapshot);
+      
+      list.value = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+    } catch (error) {
+      console.error('Error fetching todos:', error)
+    } finally {
+      loading.value = false
+    }
   }
- }
+
+
+//  const getItem =()=>{
+//   const storedList = localStorage.getItem("todo")
+//   if (storedList) {
+//     list.value = JSON.parse(storedList)
+//     console.log("List updated", list.value);
+    
+//   }
+//  }
+
  
+ const addItem = async (todoText) => {
+    try {
+      const docRef = await addDoc(collection(db, 'todos'), {
+        text: inputText.value,
+        completed: false,
+        createdAt: new Date()
+      })
+      // Refresh the list
+      await fetchTodos()
+      return docRef
+    } catch (error) {
+      console.error('Error adding todo:', error)
+    }
+  }
 
-const addItem = () => {
-  todoList.value.push(inputText.value)
-  localStorage.setItem("todo",JSON.stringify(todoList.value))
-  inputText.value = ''
-  getItem()
+// const addItem = () => {
+//   todoList.value.push(inputText.value)
+//   localStorage.setItem("todo",JSON.stringify(todoList.value))
+//   inputText.value = ''
+//   getItem()
 
-}
+// }
 </script>
 
 <template>
@@ -51,8 +92,9 @@ const addItem = () => {
   </div>
   <div class="flex items-start justify-center">
     <div >
+  
       <ul>
-        <li v-for="item in list" :key="item">{{ item }}</li>
+        <li v-for="item in list" :key="item"> {{  }} {{ item.text }}</li>
       </ul>
     </div></div>
 
