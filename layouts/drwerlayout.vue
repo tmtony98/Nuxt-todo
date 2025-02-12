@@ -1,20 +1,17 @@
-<script setup>
-import { ref } from 'vue'
-import { Dialog, DialogPanel } from '@headlessui/vue'
-import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
-
+<script setup lang="ts">
 const navigation = [
-  { name: 'Product', href: '#' },
-  { name: 'Features', href: '#' },
-  { name: 'Marketplace', href: '#' },
-  { name: 'Company', href: '#' },
+  { name: 'edit', href: '#' },
+  { name: 'edit', href: '#' },
+  { name: 'edit', href: '#' },
+  { name: 'edit', href: '#' },
 ]
 
 const mobileMenuOpen = ref(false)
 </script>
 
 <template>
-    <header class="bg-gray-200">
+    <div>
+      <header class="bg-gray-200">
       <nav class="mx-auto flex max-w-7xl items-center justify-between gap-x-6 p-6 lg:px-8" aria-label="Global">
         <div class="flex lg:flex-1">
           <a href="#" class="-m-1.5 p-1.5">
@@ -63,5 +60,10 @@ const mobileMenuOpen = ref(false)
         </DialogPanel>
       </Dialog>
     </header>
+    <slot/>
+     <Drawer/>
+     <Footer2/>
+     
+      
+    </div>
   </template>
-  
