@@ -5,6 +5,6 @@ definePageMeta({
 </script>
 
 <template>
-    <InputForm/>
+    <!-- <InputForm/> -->
   </template>
 

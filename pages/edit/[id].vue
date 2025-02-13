@@ -26,7 +26,7 @@ const updateTodo = async ()=>{
     const response = await axios.put(`http://localhost:5000/todo/${id}`,{todo:inputText.value})
     console.log(response.data);  
     fetchTodos()
-    navigateTo("/todoform")
+    navigateTo("/")
 }
 useSeoMeta({
   title: 'Todo Edit Page',
