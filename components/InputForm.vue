@@ -28,7 +28,7 @@ const addItem= async ()=>{
 useSeoMeta({
   title: 'Todo App',
   ogTitle: 'My Amazing Site',
-  description: 'This is mTodo App.',
+  description: 'This is Todo App.',
   ogDescription: 'This is my amazing site, let me tell you all about it.',
   ogImage: 'https://example.com/image.png',
   twitterCard: 'summary_large_image',
@@ -38,9 +38,11 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="flex items-start justify-center">
+  <div class="flex items-start justify-center h-[70vh] w-full">
     <div class="bg-blue-200 p-8 rounded-lg mt-8 w-full max-w-2xl">
-      <div class="flex  gap-2">
+      <h1 class="text-center mb-4">Add A todo Task here</h1>
+      <div class="flex gap-2">
+      
         <input
           type="text"
           class="flex-1 bg-white rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 const navigation = [
   { name: 'edit', href: '#' },
   { name: 'edit', href: '#' },
@@ -66,4 +66,4 @@ const mobileMenuOpen = ref(false)
      
       
     </div>
-  </template>
+  </template> -->

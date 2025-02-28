@@ -1,81 +1,127 @@
-
 <script setup lang="ts">
-import axios from 'axios'
+import { ref, onMounted } from 'vue'
 
- interface Todo {
-  id: number | string;
-  todo: string;}
+interface Todo {
+  id: number | string
+  todo: string
+}
 
 const list = ref<Todo[]>([])
-const CountList = ref<Count[]>([])
-const count = ref<Count>()
+const loading = ref(false)
+const inputText = ref('')
 
-  const { data } = await useFetch<Count[]>('http://localhost:5000/todo')
-  if (data.value) {
-    CountList.value = data.value
+// Fetch todos using useFetch
+const fetchTodos = async () => {
+  const { data: todo,error, refresh: refershData  } = await useFetch<Todo[]>('http://localhost:5000/todo')
+  if (error.value) {
+    console.error('Error fetching todos:', error.value)
+    return
   }
-
-  interface Count{
-    id:number | string;
-    todo: string;
+  if (todo.value) {
+    list.value = todo.value
   }
-
-
-
-    const deleteTodo = async (id:number| string)=>{
-  const response = await axios.delete(`http://localhost:5000/todo/${id}`)
-  console.log(response.data);  
-  fetchTodos()
 }
 
-const fetchTodos= async ()=>{
-  const response = await axios.get("http://localhost:5000/todo")
- // console.log(response.data);  
-  list.value = response.data
-
-
-}
-onMounted(() => {
-  console.log("Mounted", CountList.value);
-  fetchTodos()
+// Add todo using useFetch
+const addItem = async () => {
+  if (!inputText.value.trim()) return
   
-  // fetchTodos()
-})
+  loading.value = true
+  const response = await useFetch('http://localhost:5000/todo', {
+    method: 'POST',
+    body: { todo: inputText.value }
+  })
+  const error = response.error
+  
+  if (error.value) {
+    console.error('Error adding todo:', error.value)
+  } else {
+    inputText.value = ""
+    await fetchTodos()
+  }
+  loading.value = false
+}
 
+// Delete todo using useFetch
+const deleteTodo = async (id: number | string) => {
+  loading.value = true
+  const { error } = await useFetch(`http://localhost:5000/todo/${id}`, {
+    method: 'DELETE'
+  })
+  
+  if (error.value) {
+    console.error('Error deleting todo:', error.value)
+  } else {
+    await fetchTodos()
+  }
+  loading.value = false
+}
+
+onMounted(() => {
+  setTimeout(() => {
+    fetchTodos()
+  }, 100);
+  
+})
 </script>
 
-
 <template>
-    <div>
-        <div class="container flex justify-center mt-5">
-  <div class="grid w-1/3 gap-1">
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-2xl mx-auto">
-        <ul className="space-y-3">
-          <li v-for="(item,index) in CountList" key="item.index" className="bg-blue-100 rounded-lg p-3 mb-4 flex items-center justify-between hover:bg-blue-200 transition-colors duration-200">
-            <span className="text-gray-800 font-medium">{{  index +1 }}.{{item.todo }}</span>
-            <div className="flex gap-2">
-             <NuxtLink :to="{ name: 'edit-id', params: { id: item.id } }"><button  className="bg-white px-4 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-200 shadow-sm">
-                edit
-              </button>
-            </NuxtLink> 
-              <button @click="deleteTodo(item.id)" className="bg-white px-4 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-200 shadow-sm">
-               delete
-              </button>
-            </div>
-          </li>
+  <div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="max-w-2xl mx-auto">
+      <!-- Input Section -->
+      <!-- <div class="bg-blue-200 p-8 rounded-lg mb-8">
+        <div class="flex gap-2">
+          <input
+            type="text"
+            class="flex-1 bg-white rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter item..."
+            v-model="inputText"
+            @keyup.enter="addItem"
+          />
+          <button
+            class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md transition-colors disabled:opacity-50"
+            @click="addItem"
+            :disabled="loading || !inputText.trim()"
+          >
+            {{ loading ? 'Adding...' : 'Add' }}
+          </button>
+        </div>
+      </div> -->
 
-          
-        </ul>
+      <!-- Loading State -->
+      <div v-if="loading" class="text-center py-4">
+        <p class="text-gray-600">Loading...</p>
+      </div>
+
+      <!-- Todo List -->
+      <ul v-else class="space-y-3">
+        <li
+          v-for="(item, index) in list"
+          :key="item.id"
+          class="bg-blue-100 rounded-lg p-3 flex items-center justify-between hover:bg-blue-200 transition-colors duration-200"
+        >
+          <span class="text-gray-800 font-medium">{{ index + 1 }}. {{ item.todo }}</span>
+          <div class="flex gap-2">
+            <NuxtLink
+              :to="{ name: 'edit-id', params: { id: item.id } }"
+              class="bg-white px-4 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-200 shadow-sm"
+            >
+              Edit
+            </NuxtLink>
+            <button
+              @click="deleteTodo(item.id)"
+              class="bg-white px-4 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-200 shadow-sm"
+            >
+              Delete
+            </button>
+          </div>
+        </li>
+      </ul>
+
+      <!-- Empty State -->
+      <div v-if="!loading && list.length === 0" class="text-center py-4">
+        <p class="text-gray-600">No todos yet. Add one above!</p>
       </div>
     </div>
-
   </div>
-</div>
-    </div>
 </template>
-
-
-<style scoped>
-
-</style>
