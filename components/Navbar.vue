@@ -1,24 +1,17 @@
-<script setup lang="ts">
+<script setup lang="ts" >
 import { ref } from 'vue'
 import { Dialog, DialogPanel } from '@headlessui/vue'
 import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
 import "assets/css/main.css"
 import { useRoute } from 'vue-router';
 
+
 const route = useRoute();
 
 
-
-const navigation = [
-  { name: 'Add New', href: '#' },
-  { name: 'List Todos', href: '#' },
-  // { name: 'Marketplace', href: '#' },
-  // { name: 'Company', href: '#' },
-]
-
 const mobileMenuOpen = ref(false);
 
-const isActive = (path:string) => route.path === path;
+const isActive = (path:string)  => route.path === path;
 
 
 
@@ -30,22 +23,23 @@ const isActive = (path:string) => route.path === path;
       <nav class="mx-auto flex max-w-7xl items-center justify-between gap-x-6 p-6 lg:px-8" aria-label="Global">
         <div class="flex lg:flex-1">
           <a href="#" class="-m-1.5 p-1.5">
-            <span class="sr-only">Your Company</span>
-            <img class="h-8 w-auto" src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="" />
+            <span class="">To do App</span>
+<!--            <img class="h-8 w-auto" src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="" />-->
           </a>
         </div>
         <div class="hidden lg:flex lg:gap-x-12">
-          <a href="" class="text-sm/6  font-semibold text-gray-900" >
-            <NuxtLink to="/" :class="isActive('/')? 'active':'notActive'" >Add new</NuxtLink>
-          </a>
-          <a href="" class="text-sm/6  font-semibold text-gray-900"  >
-            <NuxtLink to="/listtodo" :class="isActive('/listtodo')? 'active':'notActive'">List Todos</NuxtLink>
-          </a>
+
+            <NuxtLink to="/" :class="isActive('/') ? 'active' : 'notActive'">Add new</NuxtLink>
+
+
+            <NuxtLink to="listtodo" :class="isActive('/listtodo')? 'active':'notActive'">List Todos</NuxtLink>
+
           <!-- <a v-for="item in navigation" :key="item.name" :href="item.href" class="text-sm/6 font-semibold text-gray-900">
             {{ item.name }}</a> -->
         </div>
         <div class="flex flex-1 items-center justify-end gap-x-6">
-          <a href="#" class="hidden text-sm/6 font-semibold text-gray-900 lg:block">Log in</a>
+          
+          <NuxtLink to="/login" class="hidden text-sm/6 font-semibold text-gray-900 lg:block"> Log in</NuxtLink>
           <a href="#" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign up</a>
         </div>
         <div class="flex lg:hidden">
@@ -71,12 +65,14 @@ const isActive = (path:string) => route.path === path;
           </div>
           <div class="mt-6 flow-root">
             <div class="-my-6 divide-y divide-gray-500/10">
-              <a href="" class="text-sm/6  font-semibold text-gray-900" >
+              <div class="space-y-2 py-6">
+                <a href="" class="mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50" >
             <NuxtLink to="/" :class="isActive('/')? 'active':'notActive'" >Add new</NuxtLink>
           </a>
-          <a href="" class="text-sm/6  font-semibold text-gray-900"  >
+          <a href="" class="mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"  >
             <NuxtLink to="/listtodo" :class="isActive('/listtodo')? 'active':'notActive'">List Todos</NuxtLink>
           </a>
+              </div>
               <div class="py-6">
                 <a href="#" class="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Log in</a>
               </div>

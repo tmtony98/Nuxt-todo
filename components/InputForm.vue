@@ -2,34 +2,46 @@
 import axios from 'axios'
 import { ref } from 'vue'
 import Listview from '~/components/Listview.vue'
+import 'vue3-toastify/dist/index.css'
+import { toast } from 'vue3-toastify'
 
 definePageMeta({
   layout: 'custom'
 })
-const loading = ref(false)
+
 const inputText = ref('')
-const todos = ref([])
 
 
 
 
+const addItem = async () => {
+  const response = await useFetch('http://localhost:5000/todo', {
+    method: 'POST',
+    body: { todo: inputText.value }
+  })
+  const error = response.error
+  if (error.value) {
+    console.error('Error adding todo:', error.value)
+  } else {
+    useToastify("Todo Added successfully !", {
+    autoClose: 1500,
+    position: ToastifyOption.POSITION.TOP_RIGHT,
+  });
+    inputText.value = ""
 
-
-const addItem= async ()=>{
-  const response = await axios.post("http://localhost:5000/todo",{todo:inputText.value})
-  console.log(response.data);  
-
-   inputText.value = ""
-
+  }
 }
- 
+
+
+
+
 
 
 useSeoMeta({
   title: 'Todo App',
   ogTitle: 'My Amazing Site',
-  description: 'This is Todo App.',
-  ogDescription: 'This is my amazing site, let me tell you all about it.',
+  description: 'A simple and efficient Todo App to manage your tasks',
+  ogDescription: 'Manage your tasks efficiently with the Todo App.',
   ogImage: 'https://example.com/image.png',
   twitterCard: 'summary_large_image',
 })

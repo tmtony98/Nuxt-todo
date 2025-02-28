@@ -1,14 +1,19 @@
-<script setup>
+<script setup lang="ts">
 import { navigateTo } from '#app'
 import axios from 'axios'
 import { ref } from 'vue';
 
 const route = useRoute()
 const id = route.params.id
-const inputText = ref('')
+const inputText = ref<string> ('')
+
+interface Todo {
+  id: number | string
+  todo: string
+}
 
 definePageMeta({
-  layout: 'drwerlayout'
+  layout: 'custom'
 })
 onMounted(() => {
   console.log("id",id);
@@ -16,18 +21,43 @@ onMounted(() => {
   
 })
    
-const fetchTodos= async ()=>{
-    const response = await axios.get(`http://localhost:5000/todo/${id}`)
-    console.log(response.data);  
-    inputText.value = response.data.todo
+
+
+
+const fetchTodos = async () => {
+  const { data: todo , error, refresh: refershData  } =  await useFetch<any>(`http://localhost:5000/todo/${id}`)
+  if (error.value) {
+    console.error('Error fetching todos:', error.value)
+    return
+  }
+  if (todo.value) {
+    inputText.value = todo.value.todo 
+      
+  }
+}  
+   
+                                                                   
+
+
+const updateTodo = async () => {
+  const { data, error } = await useFetch<any>(`http://localhost:5000/todo/${id}`, {
+    method: 'PUT',
+    body: { todo: inputText.value },
+  })
+
+  if (error.value) {
+    console.error('Error updating todo:', error.value)
+    return
+  }
+  console.log(data.value)
+  useToastify("Todo Updated successfully !", {
+    autoClose: 1500,
+    position: ToastifyOption.POSITION.TOP_RIGHT,
+  })
+  navigateTo("/listtodo")
 }
 
-const updateTodo = async ()=>{
-    const response = await axios.put(`http://localhost:5000/todo/${id}`,{todo:inputText.value})
-    console.log(response.data);  
-    fetchTodos()
-    navigateTo("/")
-}
+
 useSeoMeta({
   title: 'Todo Edit Page',
   ogTitle: 'Todo Edit Page',

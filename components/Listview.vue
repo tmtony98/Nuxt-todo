@@ -8,11 +8,11 @@ interface Todo {
 
 const list = ref<Todo[]>([])
 const loading = ref(false)
-const inputText = ref('')
+
 
 // Fetch todos using useFetch
 const fetchTodos = async () => {
-  const { data: todo,error, refresh: refershData  } = await useFetch<Todo[]>('http://localhost:5000/todo')
+  const { data: todo , error, refresh: refershData  } = await useFetch<Todo[]>('http://localhost:5000/todo')
   if (error.value) {
     console.error('Error fetching todos:', error.value)
     return
@@ -23,24 +23,7 @@ const fetchTodos = async () => {
 }
 
 // Add todo using useFetch
-const addItem = async () => {
-  if (!inputText.value.trim()) return
-  
-  loading.value = true
-  const response = await useFetch('http://localhost:5000/todo', {
-    method: 'POST',
-    body: { todo: inputText.value }
-  })
-  const error = response.error
-  
-  if (error.value) {
-    console.error('Error adding todo:', error.value)
-  } else {
-    inputText.value = ""
-    await fetchTodos()
-  }
-  loading.value = false
-}
+
 
 // Delete todo using useFetch
 const deleteTodo = async (id: number | string) => {
@@ -52,6 +35,11 @@ const deleteTodo = async (id: number | string) => {
   if (error.value) {
     console.error('Error deleting todo:', error.value)
   } else {
+    useToastify("Todo deleted !", {
+    autoClose: 1000,
+    position: ToastifyOption.POSITION.TOP_RIGHT,
+
+  });
     await fetchTodos()
   }
   loading.value = false
